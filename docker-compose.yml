@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  beacon:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - beacon-data:/root/.beacon
+    environment:
+      - PYTHONUNBUFFERED=1
+      - BEACON_SLACK_WEBHOOK=${BEACON_SLACK_WEBHOOK:-}
+
+volumes:
+  beacon-data:
