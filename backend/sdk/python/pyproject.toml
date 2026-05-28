@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beacon-trace"
-version = "1.0.0"
+version = "1.0.1"
 description = "Local-first observability SDK for AI agents"
 readme = "README.md"
 license = "MIT"
@@ -26,9 +26,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/pisigmac/beacon"
-Repository = "https://github.com/pisigmac/beacon"
-Issues = "https://github.com/pisigmac/beacon/issues"
+Homepage = "https://github.com/pisigmac/beacon-trace"
+Repository = "https://github.com/pisigmac/beacon-trace"
+Issues = "https://github.com/pisigmac/beacon-trace/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

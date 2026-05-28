@@ -46,7 +46,7 @@ tracer.end_trace(status="success")
 Start the Beacon server to see your traces:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/pisigmac/beacon/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/pisigmac/beacon-trace/main/install.sh | bash
 beacon start
 ```
 
@@ -54,5 +54,5 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Links
 
-- [GitHub](https://github.com/pisigmac/beacon)
-- [Issues](https://github.com/pisigmac/beacon/issues)
+- [GitHub](https://github.com/pisigmac/beacon-trace)
+- [Issues](https://github.com/pisigmac/beacon-trace/issues)

@@ -7,6 +7,6 @@ setup(
     packages=find_packages(),
     install_requires=["requests>=2.28.0"],
     python_requires=">=3.8",
-    author="Beacon Team",
-    url="https://github.com/yourusername/beacon",
+    author="Beacon Team - Vikas Budde",
+    url="https://github.com/pisgimac/beacon-trace",
 )

@@ -2,10 +2,10 @@
 set -e
 
 # Beacon — Local-first observability for AI agents
-# Usage: curl -fsSL https://raw.githubusercontent.com/pisigmac/beacon/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/pisigmac/beacon-trace/main/install.sh | bash
 
-REPO="https://github.com/pisigmac/beacon"
-REPO_RAW="https://raw.githubusercontent.com/pisigmac/beacon/main"
+REPO="https://github.com/pisigmac/beacon-trace"
+REPO_RAW="https://raw.githubusercontent.com/pisigmac/beacon-trace/main"
 INSTALL_DIR="$HOME/.beacon/app"
 BIN_DIR="$HOME/.local/bin"
 
