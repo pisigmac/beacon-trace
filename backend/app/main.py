@@ -18,8 +18,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Beacon",
     description="Local-first observability for AI agents",
-    version="1.1.0",
-    lifespan=lifespan
+    version="1.0.2",
+    lifespan=lifespan,
+    redirect_slashes=False
 )
 
 app.add_middleware(
@@ -37,7 +38,7 @@ app.include_router(alerts.router, prefix="/api/v1/alerts", tags=["alerts"])
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "beacon", "version": "1.1.0"}
+    return {"status": "ok", "service": "beacon", "version": "1.0.2"}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
