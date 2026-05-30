@@ -156,3 +156,32 @@ def prometheus_metrics():
     conn.close()
 
     return Response(content="\n".join(lines) + "\n", media_type="text/plain")
+
+@router.get("/retry-distribution")
+def get_retry_distribution():
+    """Get retry count distribution across traces."""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT retry_count, COUNT(*) as count
+        FROM traces
+        WHERE started_at > datetime('now', '-7 days')
+        GROUP BY retry_count
+        ORDER BY retry_count
+    """)
+    
+    distribution = [{"retry_count": r[0], "trace_count": r[1]} for r in cursor.fetchall()]
+    
+    cursor.execute("""
+        SELECT AVG(cost_usd) FROM traces
+        WHERE retry_count > 0 AND started_at > datetime('now', '-7 days')
+    """)
+    avg_cost_with_retries = cursor.fetchone()[0] or 0
+    
+    conn.close()
+    
+    return {
+        "distribution": distribution,
+        "avg_cost_with_retries": round(avg_cost_with_retries, 4)
+    }

@@ -36,6 +36,12 @@ LangSmith wants your company's credit card. Custom logging means piping `console
 | **Loop & Stall Detection** | Alerts when an agent cycles without progress or stalls |
 | **Slack Alert Integration** | Critical alerts pushed to your Slack channel |
 | **Prometheus Export** | `/api/v1/metrics/prometheus` endpoint for Grafana scraping |
+| **Trace Lineage** | Parent-child trace relationships for multi-agent orchestration |
+| **Tool Call Tracking** | Tool-specific metadata (status, response codes, errors) |
+| **Retry Analysis** | Track retry counts and identify flaky operations |
+| **Failure Boundary Detection** | Pinpoint exact step where traces fail |
+| **Retry Distribution Chart** | Visualize retry patterns across traces |
+| **Trace Hierarchy View** | Hierarchical visualization of agent orchestration |
 
 ---
 
@@ -98,23 +104,31 @@ def process_invoice(pdf_path):
     return result
 ```
 
-**Python — full control:**
+**Python — full control with lineage:**
 ```python
 from beacon import BeaconTracer
 
 tracer = BeaconTracer(agent_id="my-agent", api_url="http://localhost:8000")
-tracer.start_trace(metadata={"user_id": "123"})
 
+# Start with parent trace for multi-agent orchestration
+tracer.start_trace(parent_trace_id="orchestrator-trace-id")
+
+# Log steps with tool metadata and retry tracking
 tracer.log_step(
-    step_type="llm_call",
-    model="gpt-4",
-    input_tokens=1200,
-    output_tokens=400,
-    cost_usd=0.012,
-    latency_ms=1200
+    step_type="tool_call",
+    tool_name="search_api",
+    tool_status="ok",
+    tool_response_code=200,
+    retry_count=1,
+    latency_ms=500
 )
 
-tracer.end_trace(status="success")
+# End trace with failure boundary detection
+tracer.end_trace(
+    status="success",
+    first_failure_step_number=None,
+    retry_count=1
+)
 ```
 
 **TypeScript — one wrapper:**
@@ -271,6 +285,8 @@ The dashboard features:
 | `cost_spike` | >$5 spent in 1 hour | Critical |
 | `failure_rate` | >50% failures in 1 hour | High |
 | `stall` | Trace running >5 minutes | Medium |
+| `excessive_retries` | >2 retries per trace in 1 hour | High |
+| `tool_failure` | >50% tool call failure rate in 1 hour | High |
 
 ---
 

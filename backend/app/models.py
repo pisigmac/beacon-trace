@@ -28,6 +28,8 @@ class AlertType(str, Enum):
     LATENCY_SPIKE = "latency_spike"
     CONTEXT_WINDOW = "context_window"
     STALL = "stall"
+    EXCESSIVE_RETRIES = "excessive_retries"
+    TOOL_FAILURE = "tool_failure"
 
 class AgentCreate(BaseModel):
     id: str
@@ -61,11 +63,17 @@ class Step(BaseModel):
     latency_ms: int = 0
     status: str = "ok"
     error: Optional[str] = None
+    tool_status: str = "ok"
+    tool_response_code: Optional[int] = None
+    tool_error: Optional[str] = None
+    retry_count: int = 0
+    retry_history: Optional[List[Dict[str, Any]]] = None
 
 class TraceCreate(BaseModel):
     id: str
     agent_id: str
     metadata: Optional[Dict[str, Any]] = None
+    parent_trace_id: Optional[str] = None
 
 class TraceUpdate(BaseModel):
     status: Optional[TraceStatus] = None
@@ -77,6 +85,9 @@ class TraceUpdate(BaseModel):
     cost_usd: Optional[float] = None
     steps: Optional[List[Step]] = None
     error_message: Optional[str] = None
+    first_failure_step_number: Optional[int] = None
+    first_failure_reason: Optional[str] = None
+    retry_count: Optional[int] = None
 
 class Trace(BaseModel):
     id: str
@@ -92,6 +103,10 @@ class Trace(BaseModel):
     steps: Optional[List[Step]] = None
     metadata: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = None
+    parent_trace_id: Optional[str] = None
+    first_failure_step_number: Optional[int] = None
+    first_failure_reason: Optional[str] = None
+    retry_count: int = 0
 
 class Alert(BaseModel):
     id: str

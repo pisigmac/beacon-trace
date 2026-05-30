@@ -1,4 +1,4 @@
-import { AlertTriangle, AlertCircle, Info, X } from 'lucide-react'
+import { AlertTriangle, AlertCircle, Info } from 'lucide-react'
 import type { Alert } from '../types'
 
 const severityConfig = {

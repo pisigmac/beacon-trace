@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="beacon-trace",
-    version="1.0.0",
+    version="1.0.2",
     description="Local-first observability SDK for AI agents",
     packages=find_packages(),
     install_requires=["requests>=2.28.0"],

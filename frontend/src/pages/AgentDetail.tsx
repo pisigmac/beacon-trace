@@ -8,7 +8,7 @@ export default function AgentDetail() {
   const { id } = useParams<{ id: string }>()
   const { data: agent } = useApi<Agent>(`/api/v1/agents/${id}`)
   const { data: traces } = useApi<Trace[]>(`/api/v1/agents/${id}/traces?limit=50`)
-  const { data: metrics } = useApi(`/api/v1/metrics/agent/${id}`)
+  const { data: _metrics } = useApi(`/api/v1/metrics/agent/${id}`)
 
   const statusColors = {
     healthy: 'bg-success',

@@ -47,6 +47,7 @@ def list_agents(status: Optional[AgentStatus] = None):
 
 @router.get("/{agent_id}/traces")
 def get_agent_traces(agent_id: str, limit: int = 20):
+    from backend.app.routers.traces import _row_to_trace
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("""
@@ -54,4 +55,4 @@ def get_agent_traces(agent_id: str, limit: int = 20):
     """, (agent_id, limit))
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    return [_row_to_trace(r) for r in rows]

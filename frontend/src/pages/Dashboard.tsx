@@ -7,6 +7,9 @@ import ActivityFeed from '../components/ActivityFeed'
 import AlertPanel from '../components/AlertPanel'
 import CostTrendChart from '../components/CostTrendChart'
 import HourlyActivityChart from '../components/HourlyActivityChart'
+import { RetryChart } from '../components/RetryChart'
+import { TraceTree } from '../components/TraceTree'
+import { TraceExplorer } from '../components/TraceExplorer'
 import type { MetricsSummary, Agent, Trace, Alert } from '../types'
 import { Activity, TrendingUp, AlertTriangle, Wifi, WifiOff } from 'lucide-react'
 
@@ -45,6 +48,7 @@ export default function Dashboard() {
           total_tokens: 0,
           cost_usd: 0,
           error_message: null,
+          retry_count: 0
         }
         setTraces((prev) => [newTrace, ...prev].slice(0, 20))
         setLiveMetrics((prev) => prev ? {
@@ -133,11 +137,17 @@ export default function Dashboard() {
             <CostTrendChart data={metrics?.cost_trend ?? []} />
             <HourlyActivityChart data={metrics?.hourly_activity ?? []} />
           </div>
+          <RetryChart />
+          <TraceTree />
         </div>
         <div className="space-y-6">
           <AlertPanel alerts={alerts} />
           <ActivityFeed traces={traces} />
         </div>
+      </div>
+
+      <div className="mt-6">
+        <TraceExplorer />
       </div>
     </div>
   )

@@ -52,7 +52,13 @@ def init_db():
             steps_compressed BLOB,
             metadata TEXT,
             error_message TEXT,
-            FOREIGN KEY (agent_id) REFERENCES agents(id)
+            parent_trace_id TEXT,
+            first_failure_step_number INTEGER,
+            first_failure_reason TEXT,
+            first_failure_timestamp TIMESTAMP,
+            retry_count INTEGER DEFAULT 0,
+            FOREIGN KEY (agent_id) REFERENCES agents(id),
+            FOREIGN KEY (parent_trace_id) REFERENCES traces(id)
         )
     """)
 
@@ -74,6 +80,12 @@ def init_db():
     """)
     cursor.execute("""
         CREATE INDEX IF NOT EXISTS idx_traces_started ON traces(started_at);
+    """)
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_traces_parent ON traces(parent_trace_id);
+    """)
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_traces_retry ON traces(retry_count);
     """)
     cursor.execute("""
         CREATE INDEX IF NOT EXISTS idx_alerts_unresolved ON alerts(resolved);

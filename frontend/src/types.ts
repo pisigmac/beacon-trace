@@ -22,6 +22,31 @@ export interface Trace {
   total_tokens: number;
   cost_usd: number;
   error_message: string | null;
+  parent_trace_id?: string;
+  first_failure_step_number?: number;
+  first_failure_reason?: string;
+  retry_count: number;
+  steps?: Step[];
+}
+
+export interface Step {
+  step_number: number;
+  type: string;
+  timestamp: string;
+  duration_ms: number;
+  input_tokens: number;
+  output_tokens: number;
+  cost_usd: number;
+  tool_name?: string;
+  model?: string;
+  latency_ms: number;
+  status: string;
+  error?: string;
+  tool_status: string;
+  tool_response_code?: number;
+  tool_error?: string;
+  retry_count: number;
+  retry_history?: any[];
 }
 
 export interface Alert {

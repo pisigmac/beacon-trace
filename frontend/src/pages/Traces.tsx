@@ -1,6 +1,6 @@
 import { useApi } from '../hooks/useApi'
 import type { Trace } from '../types'
-import { Search, Filter } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Traces() {

@@ -18,6 +18,8 @@ class AlertService:
             self.check_cost_spikes()
             self.check_failure_rates()
             self.check_stalls()
+            self.check_excessive_retries()
+            self.check_tool_failures()
 
     def check_loops(self):
         conn = get_db()
@@ -100,6 +102,68 @@ class AlertService:
                 agent_id, "stall", "medium",
                 f"Trace {trace_id[:8]}... stalled for >5 minutes."
             )
+
+        conn.close()
+
+    def check_excessive_retries(self):
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT id, agent_id, retry_count
+            FROM traces 
+            WHERE started_at > datetime('now', '-1 hour')
+            AND retry_count > 2
+        """)
+
+        for row in cursor.fetchall():
+            trace_id, agent_id, retry_count = row
+            self._create_alert_if_new(
+                agent_id, "excessive_retries", "high",
+                f"Trace {trace_id[:8]}... had {retry_count} retries in last hour."
+            )
+
+        conn.close()
+
+    def check_tool_failures(self):
+        from backend.app.database import decompress_steps
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT id, agent_id, steps_compressed
+            FROM traces 
+            WHERE started_at > datetime('now', '-1 hour')
+            AND steps_compressed IS NOT NULL
+        """)
+
+        agent_tool_stats = {}
+        
+        for row in cursor.fetchall():
+            trace_id, agent_id, steps_compressed = row
+            try:
+                steps = decompress_steps(steps_compressed)
+                tool_calls = [s for s in steps if s.get('type') == 'tool_call']
+                
+                if tool_calls:
+                    failed = sum(1 for s in tool_calls if s.get('tool_status') != 'ok')
+                    
+                    if agent_id not in agent_tool_stats:
+                        agent_tool_stats[agent_id] = {'total': 0, 'failed': 0}
+                    
+                    agent_tool_stats[agent_id]['total'] += len(tool_calls)
+                    agent_tool_stats[agent_id]['failed'] += failed
+            except Exception:
+                pass
+
+        for agent_id, stats in agent_tool_stats.items():
+            if stats['total'] > 0:
+                failure_rate = stats['failed'] / stats['total']
+                if failure_rate > 0.5:
+                    self._create_alert_if_new(
+                        agent_id, "tool_failure", "high",
+                        f"Agent {agent_id} tool failure rate: {failure_rate*100:.0f}% in last hour."
+                    )
 
         conn.close()
 
